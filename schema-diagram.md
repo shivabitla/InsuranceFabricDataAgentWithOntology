@@ -1,5 +1,27 @@
 # Insurance Policy Sales and Claims Schema
 
+## Deployed Fabric Architecture
+
+```mermaid
+flowchart TB
+    Seeds["Repository CSV seeds<br/>100 sales, 24 claims, 24 dates<br/>10 agents, carriers, customers, and products each"]
+
+    subgraph Workspace["sbfabricInsDataAgent"]
+        Lakehouse["InsurancePolicySalesAndClaimsLH<br/>Seven dbo Delta tables"]
+        Model["InsurancePolicySalesAndClaimsSchema<br/>Seven Direct Lake tables<br/>Seven measures, eleven relationships"]
+        Ontology["InsurancePolicySalesAndClaimsOntlogy<br/>Seven entities, eleven relationships"]
+
+        Lakehouse -->|"Direct Lake via SQL analytics endpoint"| Model
+        Lakehouse -->|"Entity and relationship bindings"| Ontology
+    end
+
+    Seeds -->|"CSV upload and load to Delta"| Lakehouse
+```
+
+Both Fabric items use the destination lakehouse, not each other. The ontology entities map `Agent`, `Carrier`, `Customer`, `Date`, `Product`, `PolicySale`, and `Claim` to the corresponding dimension and fact tables below. The original `sbfabiq` workspace was a read-only reference and is not a data dependency. Local CSV changes must be loaded into Fabric; Git pushes do not refresh the lakehouse or semantic model.
+
+## Shared-Dimension Table Schema
+
 ```mermaid
 erDiagram
     DimAgent ||--o{ FactPolicySales : soldBy
@@ -25,7 +47,7 @@ erDiagram
         int CustomerKey PK
         string CustomerID
         string CustomerName
-        int Phone
+        string Phone
         string Address
         string State
         string Region
