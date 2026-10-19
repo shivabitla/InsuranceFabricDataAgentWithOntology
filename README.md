@@ -1,4 +1,4 @@
-# Insurance POC Ontology
+# Insurance Fabric Data Agents with Ontology
 
 - Fabric workspace: `sbfabricInsDataAgent`
 - Lakehouse: `InsurancePolicySalesAndClaimsLH`
