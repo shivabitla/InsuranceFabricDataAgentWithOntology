@@ -36,7 +36,7 @@ The following counts describe the original deployed seeds, not the current CSV f
 | `dbo.dimproduct` | Insurance product dimension | 5 |
 | `dbo.factpolicysales` | Policy sale fact | 50 |
 
-The original Lakehouse seed files were stored under `Files/InsuranceSalesSeed/`. The expanded local CSVs and claims fact have not been uploaded to the Lakehouse or added to the live ontology. [fabric-artifacts.json](fabric-artifacts.json) records the original item identifiers and export provenance, not the current local data inventory.
+The original Lakehouse seed files were stored under `Files/InsuranceSalesSeed/`. The expanded local CSVs and claims fact have not been uploaded to the Lakehouse or added to the live ontology. [fabric-artifacts.json](fabric-artifacts.json) records the original item identifiers and the local ontology extension's provenance, not the current local data inventory.
 
 ## Star Relationships
 
@@ -58,7 +58,20 @@ The model is not connected to the local CSVs or the Lakehouse. Replace its parti
 
 ## Ontology
 
-The original ontology follows the Lakeshore tutorial pattern: `PolicySale` and dimension entities with Lakehouse property bindings and explicit relationships. [ontology.ttl](ontology.ttl) is the Fabric-generated Turtle export. [ontology-model.json](ontology-model.json) is a descriptive companion manifest, not a Fabric import package. These exports have not been extended with the local claims entity or its bindings.
+The repository ontology extends the original Fabric export with a `Claim` entity containing all 14 columns from the claims CSV. It now describes seven entity types and eleven relationships. [ontology.ttl](ontology.ttl) is the locally extended RDF/Turtle file, not an untouched native export or a Fabric deployment package. [ontology-model.json](ontology-model.json) records the source-column join mappings as a descriptive manifest, not an import package.
+
+| Claim relationship | Source column | Target |
+| --- | --- | --- |
+| `policyAgent` | `AgentKey` | `Agent.AgentKey` |
+| `claimedBy` | `CustomerKey` | `Customer.CustomerKey` |
+| `claimedProduct` | `ProductKey` | `Product.ProductKey` |
+| `claimCarrier` | `CarrierKey` | `Carrier.CarrierKey` |
+| `lossOn` | `LossDateKey` | `Date.DateKey` |
+| `reportedOn` | `ReportedDateKey` | `Date.DateKey` |
+
+Shared property names such as `PolicyNumber` and dimension keys are qualified for `Claim` in Turtle, preserving the existing `PolicySale` property domains. The two claim date relationships are ontology links; active/inactive date filtering is a TMDL behavior, not an RDF relationship setting. Claim amount properties use `xsd:decimal` for USD values.
+
+The proposed `dbo.factclaims` source and its joins are local definitions only. They have not been created or bound in the live Fabric ontology. Provision the claims table and configure its entity property bindings and relationship joins in Fabric before querying live claims through the ontology. The repository does not contain a configured or deployed data agent.
 
 ## Working With the Data
 
@@ -80,6 +93,6 @@ Get-ChildItem -Filter *.csv | ForEach-Object {
 - [schema-diagram.md](schema-diagram.md): combined policy-sales and claims schema.
 - [semantic-model.md](semantic-model.md): illustrative model inventory and measure notes.
 - [semantic-model/tables/README.md](semantic-model/tables/README.md): per-table TMDL guide.
-- [ontology.ttl](ontology.ttl): original native RDF/Turtle export.
-- [ontology-model.json](ontology-model.json): original entity bindings and relationship mappings.
-- [fabric-artifacts.json](fabric-artifacts.json): original Fabric identifiers and export provenance.
+- [ontology.ttl](ontology.ttl): original RDF/Turtle ontology extended locally with claims.
+- [ontology-model.json](ontology-model.json): entity source columns and relationship join mappings, including the proposed claims source.
+- [fabric-artifacts.json](fabric-artifacts.json): original Fabric identifiers and local extension provenance.

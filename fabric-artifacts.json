@@ -32,9 +32,10 @@
   "ontology": {
     "name": "InsurnaceOntlogy",
     "id": "df3ab284-7783-4196-a652-95276c448a7d",
-    "nativeExport": true,
+    "nativeExport": false,
     "nativeExportFile": "ontology.ttl",
     "nativeExportFormat": "Turtle (RDF)",
-    "descriptionFile": "ontology-model.json"
+    "descriptionFile": "ontology-model.json",
+    "note": "Originally exported from Fabric, then extended locally with Claim, 14 claim properties, and six claim-to-dimension relationships. The local changes are not deployed; ontology.ttl is no longer an untouched native export or a Fabric deployment package."
   }
 }

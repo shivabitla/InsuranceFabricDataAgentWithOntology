@@ -6,19 +6,33 @@
   "lakehouse": "InsuranceDataLH",
   "lakehouseId": "dbeed749-6b8a-4201-93ef-817c1d5bcd70",
   "ontologyId": "df3ab284-7783-4196-a652-95276c448a7d",
+  "localExtension": {
+    "entity": "Claim",
+    "status": "not-deployed-to-fabric",
+    "grain": "One row per claim with current status, cumulative payments, and outstanding reserve in USD.",
+    "policyReference": "PolicyNumber is a business reference, not a direct fact-to-fact relationship.",
+    "agentRole": "AgentKey identifies the policy's selling agent, not a claims adjuster."
+  },
   "entityTypes": [
     {"name":"Agent","table":"dbo.dimagent","properties":["AgentKey","AgentID","AgentName","AgentLocation"]},
     {"name":"Customer","table":"dbo.dimcustomer","properties":["CustomerKey","CustomerID","CustomerName","Phone","Address","State","Region"]},
     {"name":"Product","table":"dbo.dimproduct","properties":["ProductKey","ProductID","ProductName","ProductCategory"]},
     {"name":"Carrier","table":"dbo.dimcarrier","properties":["CarrierKey","CarrierID","CarrierName","HeadquartersState","AMBestRating"]},
     {"name":"Date","table":"dbo.dimdate","properties":["DateKey","Date","CalendarYear","Quarter","MonthNumber","MonthName"]},
-    {"name":"PolicySale","table":"dbo.factpolicysales","properties":["PolicySaleKey","PolicyNumber","SaleDateKey","AgentKey","CustomerKey","ProductKey","CarrierKey","AnnualPremium","CoverageAmount","CommissionAmount","PolicyStatus","TransactionType"]}
+    {"name":"PolicySale","table":"dbo.factpolicysales","properties":["PolicySaleKey","PolicyNumber","SaleDateKey","AgentKey","CustomerKey","ProductKey","CarrierKey","AnnualPremium","CoverageAmount","CommissionAmount","PolicyStatus","TransactionType"]},
+    {"name":"Claim","table":"dbo.factclaims","properties":["ClaimKey","ClaimNumber","PolicyNumber","LossDateKey","ReportedDateKey","AgentKey","CustomerKey","ProductKey","CarrierKey","ClaimType","ClaimStatus","ClaimedAmount","PaidAmount","OutstandingReserve"]}
   ],
   "relationships": [
     {"name":"soldBy","origin":"PolicySale","originProperty":"AgentKey","target":"Agent","targetProperty":"AgentKey"},
     {"name":"purchasedBy","origin":"PolicySale","originProperty":"CustomerKey","target":"Customer","targetProperty":"CustomerKey"},
     {"name":"covers","origin":"PolicySale","originProperty":"ProductKey","target":"Product","targetProperty":"ProductKey"},
     {"name":"underwrittenBy","origin":"PolicySale","originProperty":"CarrierKey","target":"Carrier","targetProperty":"CarrierKey"},
-    {"name":"soldOn","origin":"PolicySale","originProperty":"SaleDateKey","target":"Date","targetProperty":"DateKey"}
+    {"name":"soldOn","origin":"PolicySale","originProperty":"SaleDateKey","target":"Date","targetProperty":"DateKey"},
+    {"name":"policyAgent","origin":"Claim","originProperty":"AgentKey","target":"Agent","targetProperty":"AgentKey"},
+    {"name":"claimedBy","origin":"Claim","originProperty":"CustomerKey","target":"Customer","targetProperty":"CustomerKey"},
+    {"name":"claimedProduct","origin":"Claim","originProperty":"ProductKey","target":"Product","targetProperty":"ProductKey"},
+    {"name":"claimCarrier","origin":"Claim","originProperty":"CarrierKey","target":"Carrier","targetProperty":"CarrierKey"},
+    {"name":"lossOn","origin":"Claim","originProperty":"LossDateKey","target":"Date","targetProperty":"DateKey"},
+    {"name":"reportedOn","origin":"Claim","originProperty":"ReportedDateKey","target":"Date","targetProperty":"DateKey"}
   ]
 }
