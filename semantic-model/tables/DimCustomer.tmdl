@@ -3,26 +3,38 @@ table DimCustomer
 	lineageTag: f305a991-6b0f-4408-a7de-26b247478a05
 
 	column CustomerKey
-		isNameInferred
-		sourceColumn: [CustomerKey]
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: CustomerKey
 
 	column CustomerID
-		isNameInferred
-		sourceColumn: [CustomerID]
+		dataType: string
+		sourceColumn: CustomerID
 
 	column CustomerName
-		isNameInferred
-		sourceColumn: [CustomerName]
+		dataType: string
+		sourceColumn: CustomerName
+
+	column Phone
+		dataType: string
+		sourceColumn: Phone
+
+	column Address
+		dataType: string
+		sourceColumn: Address
 
 	column State
-		isNameInferred
-		sourceColumn: [State]
+		dataType: string
+		sourceColumn: State
 
 	column Region
-		isNameInferred
-		sourceColumn: [Region]
+		dataType: string
+		sourceColumn: Region
 
-	partition DimCustomer = calculated
-		mode: import
-		source = DATATABLE("CustomerKey", INTEGER, "CustomerID", STRING, "CustomerName", STRING, "State", STRING, "Region", STRING, {{1, "C-1001", "Riley Brooks", "WA", "West"}, {2, "C-1002", "Jamie Morgan", "TX", "South"}, {3, "C-1003", "Drew Foster", "IL", "Midwest"}, {4, "C-1004", "Skyler James", "GA", "South"}, {5, "C-1005", "Quinn Parker", "CO", "West"}})
+	partition DimCustomer = entity
+		mode: directLake
+		source
+			entityName: dimcustomer
+			schemaName: dbo
+			expressionSource: 'DirectLake - InsurancePolicySalesAndClaimsLH'
 

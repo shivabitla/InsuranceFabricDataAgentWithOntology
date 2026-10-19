@@ -3,22 +3,26 @@ table DimProduct
 	lineageTag: 871ecc9d-94ba-4019-919c-faf9c37d7df9
 
 	column ProductKey
-		isNameInferred
-		sourceColumn: [ProductKey]
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: ProductKey
 
 	column ProductID
-		isNameInferred
-		sourceColumn: [ProductID]
+		dataType: string
+		sourceColumn: ProductID
 
 	column ProductName
-		isNameInferred
-		sourceColumn: [ProductName]
+		dataType: string
+		sourceColumn: ProductName
 
 	column ProductCategory
-		isNameInferred
-		sourceColumn: [ProductCategory]
+		dataType: string
+		sourceColumn: ProductCategory
 
-	partition DimProduct = calculated
-		mode: import
-		source = DATATABLE("ProductKey", INTEGER, "ProductID", STRING, "ProductName", STRING, "ProductCategory", STRING, {{1, "PR-001", "Auto Protect", "Personal Auto"}, {2, "PR-002", "Home Secure", "Homeowners"}, {3, "PR-003", "Term Life Plus", "Life"}, {4, "PR-004", "Small Business Shield", "Commercial"}, {5, "PR-005", "Health Choice", "Health"}})
+	partition DimProduct = entity
+		mode: directLake
+		source
+			entityName: dimproduct
+			schemaName: dbo
+			expressionSource: 'DirectLake - InsurancePolicySalesAndClaimsLH'
 

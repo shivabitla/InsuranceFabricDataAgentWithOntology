@@ -1,4 +1,5 @@
 model InsuranceSalesStarSchema
+	defaultMode: directLake
 	culture: en-US
 	defaultPowerBIDataSourceVersion: powerBI_V3
 	sourceQueryCulture: en-US
@@ -6,13 +7,13 @@ model InsuranceSalesStarSchema
 		legacyRedirects
 		returnErrorValuesAsNull
 
-annotation PBI_ProTooling = ["MCP-PBIModeling","TMDL-Extension"]
+annotation PBI_ProTooling = ["MCP-PBIModeling"]
 
+ref table DimAgent
+ref table DimCarrier
+ref table DimCustomer
+ref table DimDate
+ref table DimProduct
 ref table FactPolicySales
 ref table FactClaims
-ref table DimAgent
-ref table DimCustomer
-ref table DimProduct
-ref table DimCarrier
-ref table DimDate
 

@@ -1,14 +1,22 @@
 {
   "format": "descriptive-manifest-not-fabric-import",
-  "name": "InsurnaceOntlogy",
-  "workspace": "sbfabiq",
-  "workspaceId": "4ce23671-8ee7-4717-a61c-7bf937b2d3df",
-  "lakehouse": "InsuranceDataLH",
-  "lakehouseId": "dbeed749-6b8a-4201-93ef-817c1d5bcd70",
-  "ontologyId": "df3ab284-7783-4196-a652-95276c448a7d",
+  "name": "InsurancePolicySalesAndClaimsOntlogy",
+  "workspace": "sbfabricInsDataAgent",
+  "workspaceId": "d2e5a491-0114-4333-8f2a-e912ed564c3a",
+  "lakehouse": "InsurancePolicySalesAndClaimsLH",
+  "lakehouseId": "d982dd11-3041-4a8e-a924-fba1ed3ab29b",
+  "ontologyId": "a0af8c51-62a3-47b3-a71e-92b6fe17a5c5",
+  "nativeDefinitionFile": "ontology-definition.json",
+  "reference": {
+    "name": "InsurnaceOntlogy",
+    "workspace": "sbfabiq",
+    "workspaceId": "4ce23671-8ee7-4717-a61c-7bf937b2d3df",
+    "ontologyId": "df3ab284-7783-4196-a652-95276c448a7d",
+    "modified": false
+  },
   "localExtension": {
     "entity": "Claim",
-    "status": "not-deployed-to-fabric",
+    "status": "deployed-to-destination-workspace",
     "grain": "One row per claim with current status, cumulative payments, and outstanding reserve in USD.",
     "policyReference": "PolicyNumber is a business reference, not a direct fact-to-fact relationship.",
     "agentRole": "AgentKey identifies the policy's selling agent, not a claims adjuster."

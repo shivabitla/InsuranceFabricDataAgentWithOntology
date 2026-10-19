@@ -38,54 +38,66 @@ table FactPolicySales
 		lineageTag: 54cfe650-35ce-487d-a6d3-4c00708018c7
 
 	column PolicySaleKey
-		isNameInferred
-		sourceColumn: [PolicySaleKey]
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: PolicySaleKey
 
 	column PolicyNumber
-		isNameInferred
-		sourceColumn: [PolicyNumber]
+		dataType: string
+		sourceColumn: PolicyNumber
 
 	column SaleDateKey
-		isNameInferred
-		sourceColumn: [SaleDateKey]
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: SaleDateKey
 
 	column AgentKey
-		isNameInferred
-		sourceColumn: [AgentKey]
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: AgentKey
 
 	column CustomerKey
-		isNameInferred
-		sourceColumn: [CustomerKey]
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: CustomerKey
 
 	column ProductKey
-		isNameInferred
-		sourceColumn: [ProductKey]
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: ProductKey
 
 	column CarrierKey
-		isNameInferred
-		sourceColumn: [CarrierKey]
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: CarrierKey
 
 	column AnnualPremium
-		isNameInferred
-		sourceColumn: [AnnualPremium]
+		dataType: decimal
+		formatString: $#,##0.00
+		sourceColumn: AnnualPremium
 
 	column CoverageAmount
-		isNameInferred
-		sourceColumn: [CoverageAmount]
+		dataType: decimal
+		formatString: $#,##0.00
+		sourceColumn: CoverageAmount
 
 	column CommissionAmount
-		isNameInferred
-		sourceColumn: [CommissionAmount]
+		dataType: decimal
+		formatString: $#,##0.00
+		sourceColumn: CommissionAmount
 
 	column PolicyStatus
-		isNameInferred
-		sourceColumn: [PolicyStatus]
+		dataType: string
+		sourceColumn: PolicyStatus
 
 	column TransactionType
-		isNameInferred
-		sourceColumn: [TransactionType]
+		dataType: string
+		sourceColumn: TransactionType
 
-	partition FactPolicySales = calculated
-		mode: import
-		source = DATATABLE("PolicySaleKey", INTEGER, "PolicyNumber", STRING, "SaleDateKey", INTEGER, "AgentKey", INTEGER, "CustomerKey", INTEGER, "ProductKey", INTEGER, "CarrierKey", INTEGER, "AnnualPremium", CURRENCY, "CoverageAmount", CURRENCY, "CommissionAmount", CURRENCY, "PolicyStatus", STRING, "TransactionType", STRING, {{1, "POL-10001", 20250115, 1, 1, 1, 1, 1250.00, 250000.00, 187.50, "Active", "New"}, {2, "POL-10002", 20250203, 2, 2, 2, 2, 980.00, 180000.00, 147.00, "Active", "New"}, {3, "POL-10003", 20250310, 3, 3, 3, 3, 2100.00, 500000.00, 315.00, "Active", "New"}, {4, "POL-10004", 20250417, 4, 4, 4, 4, 760.00, 150000.00, 114.00, "Active", "Renewal"}, {5, "POL-10005", 20250522, 5, 5, 5, 5, 3400.00, 1000000.00, 510.00, "Active", "New"}})
+	partition FactPolicySales = entity
+		mode: directLake
+		source
+			entityName: factpolicysales
+			schemaName: dbo
+			expressionSource: 'DirectLake - InsurancePolicySalesAndClaimsLH'
 

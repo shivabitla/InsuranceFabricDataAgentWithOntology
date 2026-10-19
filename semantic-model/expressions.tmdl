@@ -1,0 +1,1 @@
+expression 'DirectLake - InsurancePolicySalesAndClaimsLH' = let Source = Sql.Database("qgy5mt44uojevf725ltbq3m7vi-sgsoluquaezuhdzk5ejo2vsmhi.datawarehouse.fabric.microsoft.com", "InsurancePolicySalesAndClaimsLH") in Source

@@ -1,18 +1,19 @@
 {
   "workspace": {
-    "name": "sbfabiq",
-    "id": "4ce23671-8ee7-4717-a61c-7bf937b2d3df"
+    "name": "sbfabricInsDataAgent",
+    "id": "d2e5a491-0114-4333-8f2a-e912ed564c3a"
   },
   "lakehouse": {
-    "name": "InsuranceDataLH",
-    "id": "dbeed749-6b8a-4201-93ef-817c1d5bcd70",
+    "name": "InsurancePolicySalesAndClaimsLH",
+    "id": "d982dd11-3041-4a8e-a924-fba1ed3ab29b",
     "tables": [
       "dbo.dimagent",
       "dbo.dimcarrier",
       "dbo.dimcustomer",
       "dbo.dimdate",
       "dbo.dimproduct",
-      "dbo.factpolicysales"
+      "dbo.factpolicysales",
+      "dbo.factclaims"
     ],
     "seedFiles": [
       "DimAgent.csv",
@@ -20,22 +21,49 @@
       "DimCustomer.csv",
       "DimDate.csv",
       "DimProduct.csv",
-      "FactPolicySales.csv"
-    ]
+      "FactPolicySales.csv",
+      "FactClaims.csv"
+    ],
+    "seedFolder": "Files/",
+    "sqlEndpointId": "cead168c-1a7a-4d1d-9cbf-264204f8dfd5"
   },
   "semanticModel": {
-    "name": "InsuranceSalesStarSchema",
-    "databaseId": "e350fbd4-697a-4825-8dc5-23cce326b233",
+    "name": "InsurancePolicySalesAndClaimsSchema",
+    "databaseId": "96bda898-d5ec-481f-bce7-dccd6c93b99c",
     "export": "semantic-model/",
-    "note": "Separate illustrative model currently has five 2025 fact rows; it is not synchronized to the 2026 Lakehouse data."
+    "storageMode": "DirectLake",
+    "tableCount": 7,
+    "measureCount": 7,
+    "relationshipCount": 11,
+    "activeRelationshipCount": 10,
+    "note": "All seven entity partitions reference dbo tables in InsurancePolicySalesAndClaimsLH through its SQL analytics endpoint."
   },
   "ontology": {
-    "name": "InsurnaceOntlogy",
-    "id": "df3ab284-7783-4196-a652-95276c448a7d",
-    "nativeExport": false,
-    "nativeExportFile": "ontology.ttl",
-    "nativeExportFormat": "Turtle (RDF)",
+    "name": "InsurancePolicySalesAndClaimsOntlogy",
+    "id": "a0af8c51-62a3-47b3-a71e-92b6fe17a5c5",
+    "nativeExport": true,
+    "nativeExportFile": "ontology-definition.json",
+    "nativeExportFormat": "Fabric generation 2 definition with InlineBase64 TMDL parts",
     "descriptionFile": "ontology-model.json",
-    "note": "Originally exported from Fabric, then extended locally with Claim, 14 claim properties, and six claim-to-dimension relationships. The local changes are not deployed; ontology.ttl is no longer an untouched native export or a Fabric deployment package."
+    "entityCount": 7,
+    "relationshipCount": 11,
+    "note": "Copied from the source ontology, extended with Claim, and bound exclusively to the destination lakehouse. Native definition and creation status were verified; interactive graph browsing and graph query results were not verified."
+  },
+  "reference": {
+    "workspace": {"name":"sbfabiq","id":"4ce23671-8ee7-4717-a61c-7bf937b2d3df"},
+    "lakehouse": {"name":"InsuranceDataLH","id":"dbeed749-6b8a-4201-93ef-817c1d5bcd70"},
+    "semanticModel": {"name":"InsuranceSalesStarSchema","databaseId":"e350fbd4-697a-4825-8dc5-23cce326b233"},
+    "ontology": {"name":"InsurnaceOntlogy","id":"df3ab284-7783-4196-a652-95276c448a7d"},
+    "note": "Read-only source reference. No changes were made to sbfabiq. ontology.ttl retains the source ontology namespace and is a descriptive RDF extension, not the destination's native definition."
+  },
+  "verification": {
+    "date": "2026-10-19",
+    "rowCounts": {"DimAgent":10,"DimCarrier":10,"DimCustomer":10,"DimProduct":10,"DimDate":24,"FactPolicySales":100,"FactClaims":24},
+    "currency": "USD",
+    "totalPremium": 151000,
+    "paidClaims": 79700,
+    "outstandingReserve": 358200,
+    "incurredClaims": 437900,
+    "note": "DAX verified against the refreshed Direct Lake semantic model."
   }
 }

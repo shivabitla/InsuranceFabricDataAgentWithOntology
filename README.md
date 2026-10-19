@@ -1,11 +1,19 @@
 # Insurance POC Ontology
 
-Fabric workspace: `sbfabiq`  
-Lakehouse: `InsuranceDataLH`  
-Ontology: `InsurnaceOntlogy` (Fabric item ID `df3ab284-7783-4196-a652-95276c448a7d`)  
-Semantic model: `InsuranceSalesStarSchema`
+- Fabric workspace: `sbfabricInsDataAgent`
+- Lakehouse: `InsurancePolicySalesAndClaimsLH`
+- Ontology: `InsurancePolicySalesAndClaimsOntlogy`
+- Semantic model: `InsurancePolicySalesAndClaimsSchema` (Direct Lake)
 
-This repository contains synthetic insurance policy-sales and claims data, a shared-dimension schema, and portable exports from the original Fabric proof of concept. Repository updates do not deploy or refresh Fabric resources.
+This repository contains synthetic insurance policy-sales and claims data, a shared-dimension schema, and exports of the deployed Fabric model and ontology. The original `sbfabiq` workspace was used as a read-only reference and remains unchanged. Repository updates do not automatically deploy or refresh Fabric resources.
+
+## Deployed Resources
+
+- [Semantic model](https://app.powerbi.com/groups/d2e5a491-0114-4333-8f2a-e912ed564c3a/datasets/96bda898-d5ec-481f-bce7-dccd6c93b99c/details): seven Direct Lake tables, seven measures, and eleven relationships.
+- [Ontology](https://app.fabric.microsoft.com/groups/d2e5a491-0114-4333-8f2a-e912ed564c3a/ontologies/a0af8c51-62a3-47b3-a71e-92b6fe17a5c5): seven entities and eleven relationships, including claims.
+- [Lakehouse](https://app.fabric.microsoft.com/groups/d2e5a491-0114-4333-8f2a-e912ed564c3a/lakehouses/d982dd11-3041-4a8e-a924-fba1ed3ab29b): seven Delta tables loaded from the root CSVs, with seed files under `Files/`.
+
+All model and ontology table bindings point to the destination lakehouse. [fabric-artifacts.json](fabric-artifacts.json) records current identifiers, original reference identifiers, and verification results. On October 19, 2026, DAX queries confirmed 100 sales, 24 claims, USD 151,000 premium, USD 79,700 paid claims, USD 358,200 outstanding reserve, and USD 437,900 incurred claims. Ontology creation and saved bindings were verified; interactive graph browsing and graph query results were not verified. No data agent has been configured.
 
 ## Current Local Data
 
@@ -36,7 +44,7 @@ The following counts describe the original deployed seeds, not the current CSV f
 | `dbo.dimproduct` | Insurance product dimension | 5 |
 | `dbo.factpolicysales` | Policy sale fact | 50 |
 
-The original Lakehouse seed files were stored under `Files/InsuranceSalesSeed/`. The expanded local CSVs and claims fact have not been uploaded to the Lakehouse or added to the live ontology. [fabric-artifacts.json](fabric-artifacts.json) records the original item identifiers and the local ontology extension's provenance, not the current local data inventory.
+The original `sbfabiq` Lakehouse seed files were stored under `Files/InsuranceSalesSeed/`. Those original resources remain unchanged. The expanded CSVs and claims fact were loaded into the new destination lakehouse and bound to the new ontology.
 
 ## Star Relationships
 
@@ -52,13 +60,13 @@ Both facts share `DimAgent`, `DimCustomer`, `DimProduct`, and `DimCarrier` throu
 
 ## Semantic Model
 
-`InsuranceSalesStarSchema` is a separate illustrative model defined in [semantic-model/model.tmdl](semantic-model/model.tmdl). Its calculated partitions contain 5 members per non-date dimension, a 365-day calendar for 2025, 5 policy sales, and 6 claims. The CSV expansions are not reflected in those partitions.
+The native TMDL in [semantic-model/](semantic-model/) now exports the deployed `InsurancePolicySalesAndClaimsSchema`, replacing the earlier illustrative calculated-table model. Its seven Direct Lake entity partitions reference the matching lowercase `dbo` lakehouse tables through the SQL analytics endpoint.
 
-The model is not connected to the local CSVs or the Lakehouse. Replace its partitions with the intended data source and refresh before treating it as synchronized. See [semantic-model.md](semantic-model.md) for its inventory, measures, and date-filter behavior.
+The model's existing item ID, seven measures, and eleven relationships were preserved during the source change. All seven partitions were verified ready. Editing a local CSV does not update Fabric: load changed data into the lakehouse and refresh the model. See [semantic-model.md](semantic-model.md) for its inventory, measures, and date-filter behavior.
 
 ## Ontology
 
-The repository ontology extends the original Fabric export with a `Claim` entity containing all 14 columns from the claims CSV. It now describes seven entity types and eleven relationships. [ontology.ttl](ontology.ttl) is the locally extended RDF/Turtle file, not an untouched native export or a Fabric deployment package. [ontology-model.json](ontology-model.json) records the source-column join mappings as a descriptive manifest, not an import package.
+The deployed ontology copies the original six entities and five relationships and adds a `Claim` entity containing all 14 claims columns and six relationships. [ontology-definition.json](ontology-definition.json) is the native generation 2 Fabric definition, containing 21 InlineBase64 TMDL parts with destination lakehouse bindings. It is a definition payload, not a complete create-item request or credential package. [ontology-model.json](ontology-model.json) is its readable source-column and join manifest, not an import package. [ontology.ttl](ontology.ttl) remains a descriptive RDF extension using the original ontology namespace, not the destination's native definition.
 
 | Claim relationship | Source column | Target |
 | --- | --- | --- |
@@ -71,7 +79,7 @@ The repository ontology extends the original Fabric export with a `Claim` entity
 
 Shared property names such as `PolicyNumber` and dimension keys are qualified for `Claim` in Turtle, preserving the existing `PolicySale` property domains. The two claim date relationships are ontology links; active/inactive date filtering is a TMDL behavior, not an RDF relationship setting. Claim amount properties use `xsd:decimal` for USD values.
 
-The proposed `dbo.factclaims` source and its joins are local definitions only. They have not been created or bound in the live Fabric ontology. Provision the claims table and configure its entity property bindings and relationship joins in Fabric before querying live claims through the ontology. The repository does not contain a configured or deployed data agent.
+The `dbo.factclaims` table and claim bindings are deployed in `sbfabricInsDataAgent`. Reusing these exports in another workspace requires remapping item IDs and source connections. The repository does not contain a configured or deployed data agent.
 
 ## Working With the Data
 
@@ -91,8 +99,9 @@ Get-ChildItem -Filter *.csv | ForEach-Object {
 
 - Seven CSVs listed above: current synthetic seed data.
 - [schema-diagram.md](schema-diagram.md): combined policy-sales and claims schema.
-- [semantic-model.md](semantic-model.md): illustrative model inventory and measure notes.
+- [semantic-model.md](semantic-model.md): deployed Direct Lake model inventory and measure notes.
 - [semantic-model/tables/README.md](semantic-model/tables/README.md): per-table TMDL guide.
 - [ontology.ttl](ontology.ttl): original RDF/Turtle ontology extended locally with claims.
-- [ontology-model.json](ontology-model.json): entity source columns and relationship join mappings, including the proposed claims source.
-- [fabric-artifacts.json](fabric-artifacts.json): original Fabric identifiers and local extension provenance.
+- [ontology-model.json](ontology-model.json): deployed entity source columns and relationship join mappings.
+- [ontology-definition.json](ontology-definition.json): native deployed ontology definition with TMDL parts.
+- [fabric-artifacts.json](fabric-artifacts.json): deployed Fabric identifiers, read-only reference provenance, and verification results.

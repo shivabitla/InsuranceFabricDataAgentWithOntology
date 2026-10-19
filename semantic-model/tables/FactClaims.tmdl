@@ -1,71 +1,75 @@
+/// One current claim record with cumulative paid amount and outstanding reserve. PolicyNumber is traceability, not a fact-to-fact relationship.
 table FactClaims
 
 	column ClaimKey
-		isNameInferred
-		sourceColumn: [ClaimKey]
+		dataType: int64
 		summarizeBy: none
+		sourceColumn: ClaimKey
 
 	column ClaimNumber
-		isNameInferred
-		sourceColumn: [ClaimNumber]
+		dataType: string
+		sourceColumn: ClaimNumber
 
 	column PolicyNumber
-		isNameInferred
-		sourceColumn: [PolicyNumber]
+		dataType: string
+		sourceColumn: PolicyNumber
 
 	column LossDateKey
-		isNameInferred
-		sourceColumn: [LossDateKey]
+		dataType: int64
 		summarizeBy: none
+		sourceColumn: LossDateKey
 
 	column ReportedDateKey
-		isNameInferred
-		sourceColumn: [ReportedDateKey]
+		dataType: int64
 		summarizeBy: none
+		sourceColumn: ReportedDateKey
 
 	column AgentKey
-		isNameInferred
-		sourceColumn: [AgentKey]
+		dataType: int64
 		summarizeBy: none
+		sourceColumn: AgentKey
 
 	column CustomerKey
-		isNameInferred
-		sourceColumn: [CustomerKey]
+		dataType: int64
 		summarizeBy: none
+		sourceColumn: CustomerKey
 
 	column ProductKey
-		isNameInferred
-		sourceColumn: [ProductKey]
+		dataType: int64
 		summarizeBy: none
+		sourceColumn: ProductKey
 
 	column CarrierKey
-		isNameInferred
-		sourceColumn: [CarrierKey]
+		dataType: int64
 		summarizeBy: none
+		sourceColumn: CarrierKey
 
 	column ClaimType
-		isNameInferred
-		sourceColumn: [ClaimType]
+		dataType: string
+		sourceColumn: ClaimType
 
 	column ClaimStatus
-		isNameInferred
-		sourceColumn: [ClaimStatus]
+		dataType: string
+		sourceColumn: ClaimStatus
 
 	column ClaimedAmount
+		dataType: decimal
 		formatString: $#,##0.00
-		isNameInferred
-		sourceColumn: [ClaimedAmount]
+		sourceColumn: ClaimedAmount
 
 	column PaidAmount
+		dataType: decimal
 		formatString: $#,##0.00
-		isNameInferred
-		sourceColumn: [PaidAmount]
+		sourceColumn: PaidAmount
 
 	column OutstandingReserve
+		dataType: decimal
 		formatString: $#,##0.00
-		isNameInferred
-		sourceColumn: [OutstandingReserve]
+		sourceColumn: OutstandingReserve
 
-	partition FactClaims = calculated
-		mode: import
-		source = DATATABLE("ClaimKey", INTEGER, "ClaimNumber", STRING, "PolicyNumber", STRING, "LossDateKey", INTEGER, "ReportedDateKey", INTEGER, "AgentKey", INTEGER, "CustomerKey", INTEGER, "ProductKey", INTEGER, "CarrierKey", INTEGER, "ClaimType", STRING, "ClaimStatus", STRING, "ClaimedAmount", CURRENCY, "PaidAmount", CURRENCY, "OutstandingReserve", CURRENCY, {{1, "CLM-250001", "POL-10001", 20250201, 20250201, 1, 1, 1, 1, "Collision", "Closed", 8500.00, 8000.00, 0.00}, {2, "CLM-250002", "POL-10002", 20250301, 20250401, 2, 2, 2, 2, "Property Damage", "Open", 25000.00, 5000.00, 18000.00}, {3, "CLM-250003", "POL-10003", 20250401, 20250401, 3, 3, 3, 3, "Death Benefit", "Under Review", 100000.00, 0.00, 100000.00}, {4, "CLM-250004", "POL-10004", 20250501, 20250601, 4, 4, 4, 4, "Liability", "Open", 15000.00, 3000.00, 10000.00}, {5, "CLM-250005", "POL-10005", 20250601, 20250601, 5, 5, 5, 5, "Medical", "Closed", 4200.00, 3800.00, 0.00}, {6, "CLM-250006", "POL-10001", 20250701, 20250801, 1, 1, 1, 1, "Glass Damage", "Denied", 900.00, 0.00, 0.00}})
+	partition FactClaims = entity
+		mode: directLake
+		source
+			entityName: factclaims
+			schemaName: dbo
+			expressionSource: 'DirectLake - InsurancePolicySalesAndClaimsLH'

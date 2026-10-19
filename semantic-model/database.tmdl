@@ -1,7 +1,7 @@
-/// Insurance policy sales star schema. Fact grain: one policy issuance or renewal transaction. Includes illustrative sample data; replace/refresh with production policy transactions before business reporting.
-database InsuranceSalesStarSchema
-	id: e350fbd4-697a-4825-8dc5-23cce326b233
-	compatibilityLevel: 1600
+/// Insurance policy sales and claims model backed by InsurancePolicySalesAndClaimsLH in sbfabricInsDataAgent.
+database InsurancePolicySalesAndClaimsSchema
+	id: 96bda898-d5ec-481f-bce7-dccd6c93b99c
+	compatibilityLevel: 1604
 	compatibilityMode: powerBI
 	language: 1033
 

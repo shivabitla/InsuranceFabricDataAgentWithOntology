@@ -1,22 +1,24 @@
 # Semantic Model Notes
 
-`InsuranceSalesStarSchema` was exported as native TMDL under `semantic-model/`.
+`InsurancePolicySalesAndClaimsSchema` is exported as native TMDL under [semantic-model/](semantic-model/). Its Fabric item ID is `96bda898-d5ec-481f-bce7-dccd6c93b99c` in `sbfabricInsDataAgent`.
 
-This is a separate illustrative model, not a live connection to `InsuranceDataLH` or the root CSVs. Its partitions are calculated DAX sample tables. Its five policy sales use `POL-10001` through `POL-10005` and 2025 dates. The original Lakehouse seeds contained 50 policy sales dated in 2026; the current local CSVs contain 100 sales and 24 claims dated in 2026. Replace the model partitions with the intended source and refresh before treating these datasets as synchronized.
+The model now uses seven Direct Lake entity partitions instead of embedded calculated DAX sample tables. The shared M expression in [semantic-model/expressions.tmdl](semantic-model/expressions.tmdl) connects to the SQL analytics endpoint of `InsurancePolicySalesAndClaimsLH`. Each partition references its matching lowercase `dbo` table. The model's item ID, seven measure formulas, and eleven relationships were preserved and verified after refresh. The original `sbfabiq` resources were not changed.
 
 ## Data Inventory
 
-| Table | TMDL rows | Local CSV rows |
+| Table | Verified model rows | Local CSV rows |
 | --- | ---: | ---: |
-| `DimAgent` | 5 | 10 |
-| `DimCarrier` | 5 | 10 |
-| `DimCustomer` | 5 | 10 |
-| `DimProduct` | 5 | 10 |
-| `DimDate` | 365 daily dates in 2025 | 24 dates in 2026, on the 1st and 15th |
-| `FactPolicySales` | 5 | 100 |
-| `FactClaims` | 6 | 24 |
+| `DimAgent` | 10 | 10 |
+| `DimCarrier` | 10 | 10 |
+| `DimCustomer` | 10 | 10 |
+| `DimProduct` | 10 | 10 |
+| `DimDate` | 24 dates in 2026, on the 1st and 15th | 24 |
+| `FactPolicySales` | 100 | 100 |
+| `FactClaims` | 24 | 24 |
 
-The exported TMDL customer table has `CustomerKey`, `CustomerID`, `CustomerName`, `State`, and `Region`. The CSV also includes `Phone` and `Address`; those two fields are not present in the current TMDL table.
+The exported customer table includes all seven CSV columns, including `Phone` and `Address`. The complete model has 52 source columns. TMDL stores source bindings and metadata, not a copy of the lakehouse data. Editing a CSV does not update Fabric; reload the affected lakehouse table and refresh the model.
+
+On October 19, 2026, DAX verified USD 151,000 total premium, USD 79,700 paid claims, USD 358,200 outstanding reserve, and USD 437,900 incurred claims. All seven partitions were ready.
 
 ## Relationships
 
@@ -50,7 +52,7 @@ This is an example, not a measure currently defined in the exported model. Compa
 
 ## Claims Fact
 
-`FactClaims` is a local extension with one row per claim, containing current status, cumulative paid amount, and outstanding reserve. Its six synthetic records reuse the existing model's 2025 policy numbers and dimension keys. The separate `FactClaims.csv` contains 24 claims referencing the local CSV seeds' 100 policies and 2026 dates (the 1st and 15th of each month). Neither claims dataset is deployed to Fabric.
+`FactClaims` has one row per claim, containing current status, cumulative paid amount, and outstanding reserve. Its 24 synthetic records are deployed in the destination lakehouse and read through Direct Lake. They reference the CSV seeds' 100 policies and 2026 dates (the 1st and 15th of each month).
 
 `PolicyNumber` provides business traceability, not a direct relationship between facts. `AgentKey` is the policy's selling agent. Amounts are USD; incurred claims equal `PaidAmount + OutstandingReserve`, not necessarily `ClaimedAmount`. No claim-payment history is retained by this grain. See [schema-diagram.md](schema-diagram.md) for the complete schema and date-filter semantics.
 
