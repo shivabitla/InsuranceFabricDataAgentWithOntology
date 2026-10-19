@@ -1,0 +1,71 @@
+table FactClaims
+
+	column ClaimKey
+		isNameInferred
+		sourceColumn: [ClaimKey]
+		summarizeBy: none
+
+	column ClaimNumber
+		isNameInferred
+		sourceColumn: [ClaimNumber]
+
+	column PolicyNumber
+		isNameInferred
+		sourceColumn: [PolicyNumber]
+
+	column LossDateKey
+		isNameInferred
+		sourceColumn: [LossDateKey]
+		summarizeBy: none
+
+	column ReportedDateKey
+		isNameInferred
+		sourceColumn: [ReportedDateKey]
+		summarizeBy: none
+
+	column AgentKey
+		isNameInferred
+		sourceColumn: [AgentKey]
+		summarizeBy: none
+
+	column CustomerKey
+		isNameInferred
+		sourceColumn: [CustomerKey]
+		summarizeBy: none
+
+	column ProductKey
+		isNameInferred
+		sourceColumn: [ProductKey]
+		summarizeBy: none
+
+	column CarrierKey
+		isNameInferred
+		sourceColumn: [CarrierKey]
+		summarizeBy: none
+
+	column ClaimType
+		isNameInferred
+		sourceColumn: [ClaimType]
+
+	column ClaimStatus
+		isNameInferred
+		sourceColumn: [ClaimStatus]
+
+	column ClaimedAmount
+		formatString: $#,##0.00
+		isNameInferred
+		sourceColumn: [ClaimedAmount]
+
+	column PaidAmount
+		formatString: $#,##0.00
+		isNameInferred
+		sourceColumn: [PaidAmount]
+
+	column OutstandingReserve
+		formatString: $#,##0.00
+		isNameInferred
+		sourceColumn: [OutstandingReserve]
+
+	partition FactClaims = calculated
+		mode: import
+		source = DATATABLE("ClaimKey", INTEGER, "ClaimNumber", STRING, "PolicyNumber", STRING, "LossDateKey", INTEGER, "ReportedDateKey", INTEGER, "AgentKey", INTEGER, "CustomerKey", INTEGER, "ProductKey", INTEGER, "CarrierKey", INTEGER, "ClaimType", STRING, "ClaimStatus", STRING, "ClaimedAmount", CURRENCY, "PaidAmount", CURRENCY, "OutstandingReserve", CURRENCY, {{1, "CLM-250001", "POL-10001", 20250201, 20250201, 1, 1, 1, 1, "Collision", "Closed", 8500.00, 8000.00, 0.00}, {2, "CLM-250002", "POL-10002", 20250301, 20250401, 2, 2, 2, 2, "Property Damage", "Open", 25000.00, 5000.00, 18000.00}, {3, "CLM-250003", "POL-10003", 20250401, 20250401, 3, 3, 3, 3, "Death Benefit", "Under Review", 100000.00, 0.00, 100000.00}, {4, "CLM-250004", "POL-10004", 20250501, 20250601, 4, 4, 4, 4, "Liability", "Open", 15000.00, 3000.00, 10000.00}, {5, "CLM-250005", "POL-10005", 20250601, 20250601, 5, 5, 5, 5, "Medical", "Closed", 4200.00, 3800.00, 0.00}, {6, "CLM-250006", "POL-10001", 20250701, 20250801, 1, 1, 1, 1, "Glass Damage", "Denied", 900.00, 0.00, 0.00}})

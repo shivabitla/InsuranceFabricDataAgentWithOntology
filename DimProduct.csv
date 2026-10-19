@@ -4,3 +4,8 @@ ProductKey,ProductID,ProductName,ProductCategory
 3,PR-003,Term Life Plus,Life
 4,PR-004,Small Business Shield,Commercial
 5,PR-005,Health Choice,Health
+6,PR-006,Auto Protect Plus,Personal Auto
+7,PR-007,Home Secure Plus,Homeowners
+8,PR-008,Term Life Premier,Life
+9,PR-009,Business Shield Plus,Commercial
+10,PR-010,Health Choice Plus,Health

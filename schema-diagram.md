@@ -1,4 +1,4 @@
-# Insurance Policy Sales Schema
+# Insurance Policy Sales and Claims Schema
 
 ```mermaid
 erDiagram
@@ -7,6 +7,12 @@ erDiagram
     DimProduct ||--o{ FactPolicySales : covers
     DimCarrier ||--o{ FactPolicySales : underwrittenBy
     DimDate ||--o{ FactPolicySales : soldOn
+    DimAgent ||--o{ FactClaims : policyAgent
+    DimCustomer ||--o{ FactClaims : claimedBy
+    DimProduct ||--o{ FactClaims : claimedProduct
+    DimCarrier ||--o{ FactClaims : claimCarrier
+    DimDate ||--o{ FactClaims : lossOn
+    DimDate ||--o{ FactClaims : reportedOn_inactive
 
     DimAgent {
         int AgentKey PK
@@ -63,6 +69,31 @@ erDiagram
         string PolicyStatus
         string TransactionType
     }
+
+    FactClaims {
+        int ClaimKey PK
+        string ClaimNumber UK
+        string PolicyNumber
+        int LossDateKey FK
+        int ReportedDateKey FK
+        int AgentKey FK
+        int CustomerKey FK
+        int ProductKey FK
+        int CarrierKey FK
+        string ClaimType
+        string ClaimStatus
+        decimal ClaimedAmount
+        decimal PaidAmount
+        decimal OutstandingReserve
+    }
 ```
 
-Each fact row represents a policy issuance or renewal transaction. Dimension keys are referenced by `FactPolicySales`; each dimension can relate to many policy transactions.
+`FactPolicySales` has one row per policy issuance or renewal transaction. `FactClaims` has one row per claim, holding its current status, cumulative paid amount, and current outstanding reserve. Update the same claim row as it develops; this is not a payment-transaction or historical snapshot fact.
+
+Both facts reuse the five existing dimensions with one-to-many, single-direction dimension-to-fact filtering. `AgentKey` on a claim identifies the policy's selling agent, not a claims adjuster. `PolicyNumber` is a shared business identifier, not a foreign key to `FactPolicySales`: policies can have multiple sales transactions and multiple claims, so there is no direct fact-to-fact relationship.
+
+`LossDateKey` is the active claims relationship to `DimDate.DateKey`. `ReportedDateKey` is inactive in the semantic model; activate it in a measure with `USERELATIONSHIP` when reporting by reported date. A shared date filter otherwise means sale date for premium and loss date for claims.
+
+All monetary amounts are USD sample values. `ClaimedAmount` is the amount requested, `PaidAmount` is paid to date, and `OutstandingReserve` estimates future payments. Incurred claims equal paid plus outstanding reserve; they need not equal the amount requested. Closed and denied sample claims have zero outstanding reserve.
+
+The local CSV seeds contain 100 policy sales, 24 claims, and 10 members in each non-date dimension. `DimDate.csv` contains 24 unique dates: the 1st and 15th of each month in 2026. All policy sale, loss, and reported date keys reference those dates; there are no 2027 dates. Existing policy and claim identifiers are unchanged, including identifiers with a `27` prefix, which does not determine the date fields. The separate TMDL model uses its existing 2025 policies and calendar instead. These are local additions, not deployed Fabric tables.

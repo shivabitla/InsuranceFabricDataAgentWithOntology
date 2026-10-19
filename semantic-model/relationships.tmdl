@@ -18,3 +18,28 @@ relationship FactPolicySales_Date
 	fromColumn: FactPolicySales.SaleDateKey
 	toColumn: DimDate.DateKey
 
+relationship FactClaims_Agent
+	fromColumn: FactClaims.AgentKey
+	toColumn: DimAgent.AgentKey
+
+relationship FactClaims_Customer
+	fromColumn: FactClaims.CustomerKey
+	toColumn: DimCustomer.CustomerKey
+
+relationship FactClaims_Product
+	fromColumn: FactClaims.ProductKey
+	toColumn: DimProduct.ProductKey
+
+relationship FactClaims_Carrier
+	fromColumn: FactClaims.CarrierKey
+	toColumn: DimCarrier.CarrierKey
+
+relationship FactClaims_LossDate
+	fromColumn: FactClaims.LossDateKey
+	toColumn: DimDate.DateKey
+
+relationship FactClaims_ReportedDate
+	isActive: false
+	fromColumn: FactClaims.ReportedDateKey
+	toColumn: DimDate.DateKey
+

@@ -20,6 +20,8 @@ This repository contains portable exports and documentation for the insurance po
 
 The six corresponding seed CSVs are included at the repository root. In the Lakehouse, the originals are under `Files/InsuranceSalesSeed/`.
 
+Local CSV extensions: the seeds now contain 10 rows in each non-date dimension, 100 policy sales, and 24 claims. The date dimension contains 24 unique 2026 dates (the 1st and 15th of each month), with matching sale, loss, and reported date keys in the facts. Existing identifiers are preserved. These local changes have not been uploaded to the Lakehouse or added to the live ontology; the table above records the original deployed seed counts. See [schema-diagram.md](schema-diagram.md) for the combined policy-sales and claims schema.
+
 ## Star Relationships
 
 - `factpolicysales.AgentKey` -> `dimagent.AgentKey` (`soldBy`)
@@ -33,6 +35,8 @@ The ontology models these same relationships with `PolicySale` as the origin ent
 ## Semantic Model
 
 `InsuranceSalesStarSchema` is a separate illustrative semantic model. Its native TMDL export is in `semantic-model/`. It currently contains five sample fact rows with 2025 dates; it is not connected to the Lakehouse's 50-row 2026 seed tables. The exported model's dimensions and relationships document the intended star schema, but do not represent the current Lakehouse data.
+
+The local TMDL model now also includes `FactClaims`, with six illustrative claims referencing its existing 2025 policies and dimensions. The policy-sales fact remains unchanged. Both facts share the five dimensions; claims use an active loss-date relationship and an inactive reported-date relationship.
 
 ## Ontology
 

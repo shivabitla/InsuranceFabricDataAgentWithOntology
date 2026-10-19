@@ -6,9 +6,10 @@ model InsuranceSalesStarSchema
 		legacyRedirects
 		returnErrorValuesAsNull
 
-annotation PBI_ProTooling = ["MCP-PBIModeling"]
+annotation PBI_ProTooling = ["MCP-PBIModeling","TMDL-Extension"]
 
 ref table FactPolicySales
+ref table FactClaims
 ref table DimAgent
 ref table DimCustomer
 ref table DimProduct

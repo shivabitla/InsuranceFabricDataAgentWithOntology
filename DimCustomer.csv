@@ -4,3 +4,8 @@ CustomerKey,CustomerID,CustomerName,Phone,Address,State,Region
 3,C-1003,Drew Foster,5550103,300 Prairie Rd,IL,Midwest
 4,C-1004,Skyler James,5550104,400 Peachtree Ln,GA,South
 5,C-1005,Quinn Parker,5550105,500 Summit Dr,CO,West
+6,C-1006,Blake Carter,5550106,600 Pine St,OR,West
+7,C-1007,Reese Ahmed,5550107,700 Oak Ave,TX,South
+8,C-1008,Devon Hayes,5550108,800 Maple Rd,OH,Midwest
+9,C-1009,Kendall Ross,5550109,900 Elm Ln,NC,South
+10,C-1010,Finley Cruz,5550110,1000 Mesa Dr,AZ,West
